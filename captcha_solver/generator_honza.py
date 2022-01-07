@@ -1,3 +1,4 @@
+import random
 import uuid
 import json
 import string
@@ -184,7 +185,10 @@ def generate_dataset():
 
 
 class CaptchaContentGenerator:
-    """Generate captcha characters from the number, lowercase and uppercase letters."""
+    """
+    Generate captcha characters from the number, lowercase and uppercase
+    letters.
+    """
 
     def __init__(self, numbers: bool, lowercase: bool, uppercase: bool):
         self.numbers = numbers
@@ -204,6 +208,57 @@ class CaptchaContentGenerator:
         '0123456789'
         """
         return string.digits if self.numbers else ""
+
+    def collect_lowercase(self) -> str:
+        """
+        Return a string of all lowercase letters.
+
+        :return: the string of lowercase letters.
+        :rtype: str
+
+        :Example:
+        >>> lowercases = CaptchaContentGenerator.collect_lowercase()
+        >>> lowercases
+        'abcdefghijklmnopqrstuvwxyz'
+        """
+        return string.ascii_lowercase if self.lowercase else ""
+
+    def collect_uppercase(self) -> str:
+        """
+        Return a string of all uppercase letters.
+
+        :return: the string of uppercase letters.
+        :rtype: str
+
+        :Example:
+        >>> uppercases = CaptchaContentGenerator.collect_uppercase()
+        >>> uppercases
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        """
+        return string.ascii_uppercase if self.uppercase else ""
+
+    def create_content(self):
+        """
+        Return a string of 5 characters from the given numbers, lowercase
+        and uppercase letters.
+
+        :return: the string of 5 characters
+        :rtype: str
+
+        :Example:
+        >>> content = CaptchaContentGenerator.create_content()
+        >>> content
+        '1a3Bp'
+        """
+        chars_collection: str = "".join(
+            (
+                self.collect_numbers(),
+                self.collect_lowercase(),
+                self.collect_uppercase()
+            )
+        )
+
+        return "".join(random.choices(chars_collection, k=5))
 
 
 if __name__ == '__main__':
