@@ -6,10 +6,15 @@ class TestCaptchaContentGenerator:
 
     def setup(self):
         """Create testing instance of generator."""
+        length = 5
         numbers = True
         lowercase = True
         uppercase = True
-        self.test = CaptchaContentGenerator(numbers, lowercase, uppercase)
+
+        self.test = CaptchaContentGenerator(
+            length, numbers,
+            lowercase, uppercase
+        )
 
     def test_correct_parameter_numbers(self):
         assert self.test.numbers
@@ -46,3 +51,6 @@ class TestCaptchaContentGenerator:
 
     def test_creating_captchas_content_of_correct_length(self):
         assert len(self.test.create_content()) == 5
+
+    def test_creating_captchas_content_of_incorrect_length(self):
+        assert len(self.test.create_content()) != 55
