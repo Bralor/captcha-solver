@@ -190,7 +190,14 @@ class CaptchaContentGenerator:
     letters.
     """
 
-    def __init__(self, numbers: bool, lowercase: bool, uppercase: bool):
+    def __init__(
+            self,
+            length: int,
+            numbers: bool,
+            lowercase: bool,
+            uppercase: bool
+    ):
+        self.length = length
         self.numbers = numbers
         self.lowercase = lowercase
         self.uppercase = uppercase
@@ -258,7 +265,7 @@ class CaptchaContentGenerator:
             )
         )
 
-        return "".join(random.choices(chars_collection, k=5))
+        return "".join(random.choices(chars_collection, k=self.length))
 
 
 if __name__ == '__main__':
