@@ -183,6 +183,10 @@ def generate_dataset():
 
     _generate_captcha('test', num_per_image, n_epoch, width, height, choices=choices)
 
+class DatasetGenerator:
+    """Create a set of files"""
+    pass
+
 
 class CaptchaContentGenerator:
     """
