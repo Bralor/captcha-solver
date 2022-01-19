@@ -15,10 +15,10 @@ from PIL.ImageFont import truetype
 # pip install captcha - https://github.com/lepture/captcha
 from captcha.image import ImageCaptcha
 
-DATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data')
-DEFAULT_FONTS = [os.path.join(DATA_DIR, 'DroidSansMono.ttf')]
+# DATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data')
+# DEFAULT_FONTS = [os.path.join(DATA_DIR, 'DroidSansMono.ttf')]
 
-print(DEFAULT_FONTS)
+# print(DEFAULT_FONTS)
 
 table =  []
 for i in range( 256 ):
@@ -140,53 +140,73 @@ def get_choices():
         ]
     return tuple([i for is_selected, subset in choices for i in subset if is_selected])
 
-def _generate_captcha(img_dir, num_per_image, n, width, height, choices):
-
-    # if os.path.exists(img_dir):
-    #     shutil.rmtree(img_dir)
-
-    image = MyImageCaptcha(width=width, height=height)
-
-    print('generating %s epoches of captchas in %s' % (n, img_dir))
-    for _ in range(n):
-        for i in itertools.permutations(choices, num_per_image):
-
-            captcha = ''.join(i)
-            # if not os.path.exists(img_dir + '/' + captcha):
-            #     os.makedirs(img_dir + '/' + captcha)
-            # fn = os.path.join(img_dir, '%s/%s.png' % (captcha, uuid.uuid4()))
-            fn = os.path.join(img_dir, '%s_%s.png' % (captcha, uuid.uuid4()))
-            image.write(captcha, fn)
-
-        if n < 20:
-            print('A epoche finished')
-
-def generate_dataset():
-
-    choices = get_choices()
-
-    width = 180
-    height = 50
-    num_per_image = 5
-    n_epoch = 1
-
-    # meta info
-    meta = {
-        'num_per_image': num_per_image,
-        'label_size': len(choices),
-        'label_choices': ''.join(choices),
-        'n_epoch': n_epoch,
-        'width': width,
-        'height': height,
-    }
-
-
-    _generate_captcha('test', num_per_image, n_epoch, width, height, choices=choices)
-
 
 class DatasetGenerator:
     """Create a set of files"""
-    pass
+
+    def __init__(self, x: int, y: int, folder: str, choices: int, content: str):
+        self.size_x = x
+        self.size_y = y
+        self.folder = folder
+        self.choices = choices
+        self.content = content
+
+    def create_empty_dir(self, root_dir: str) -> str:
+        """
+        Create an empty directory if it does not already exist.
+
+        :return: the string with the resulted status
+        :rtype: str
+
+        :Example:
+        >>> dataset_1 = DatasetGenerator(
+        ...     size_x=180, size_y=50, choices=5, 
+        ...     folder="images", content="a1bc2"
+        ... )
+        >>> dataset_1.create_empty_dir("captcha_solver/")
+        INFO: created directory images at captcha_solver/
+        """
+        try:
+            os.mkdir(os.path.join(root_dir, self.folder))
+
+        except FileExistsError:
+            message: str = f"WARNING: Folder {self.folder} already exists"
+        else:
+            message: str = f"INFO: created directory {self.folder} at {root_dir}"
+        finally:
+            return message
+
+
+    def generate_dataset(self, root_dir: str):
+        """
+        Create a dataset of captcha images.
+
+        :Example:
+        >>> dataset_1 = DatasetGenerator(
+        ...     size_x=180, size_y=50, choices=5, content="a1bc2"
+        ... )
+        >>> dataset_1.generate_dataset()
+        INFO: created directory /captcha_solver/images/ ..
+        INFO: generated dataset of 5 images in /captcha_solver/images/*.
+        """
+        status: str = self.create_empty_dir(root_dir)
+
+        if status.startswith("INFO:") or status.startswith("WARNING:"):
+            return self.create_image(root_dir, self.content)
+
+
+    def create_image(self, root_dir: str, png_name: str) -> str:
+        """
+        Create image object and save it to the disc.
+
+        :return: the string with the name of .png file
+        :rtype: str
+        """
+        image = MyImageCaptcha(self.size_x, self.size_y)
+        png_name = os.path.join(root_dir, self.folder, f"{self.content}.png")
+        image.write(self.content, png_name)
+
+        return png_name
 
 
 class CaptchaContentGenerator:
@@ -272,6 +292,3 @@ class CaptchaContentGenerator:
 
         return "".join(random.choices(chars_collection, k=self.length))
 
-
-if __name__ == '__main__':
-    generate_dataset()
