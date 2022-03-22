@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from captcha_solver.generator_honza import DatasetGenerator
+from src.generator_honza import DatasetGenerator
 
 
 class TestDatasetGenerator:
@@ -37,36 +37,36 @@ class TestDatasetGenerator:
         assert self.test.choices == 10
 
     def test_generating_new_dataset_of_captcha_pictures(self):
-        assert self.test.generate_dataset("captcha_solver") \
-            == "captcha_solver/foo/a1bc2.png"
+        assert self.test.generate_dataset("src") \
+            == "src/foo/a1bc2.png"
 
     def test_method_for_creating_a_new_empty_folder_if_it_does_not_exist(self):
-        assert self.test.create_empty_dir("captcha_solver/") \
+        assert self.test.create_empty_dir("src/") \
             != "INFO: created directory foo at captcha_solver/"
 
     def test_method_for_already_existing_folder_foo(self):
-        assert self.test.create_empty_dir("captcha_solver/") \
+        assert self.test.create_empty_dir("src/") \
             == "WARNING: Folder foo already exists"
 
     def test_method_for_creating_testing_image(self):
-        self.test.create_image("captcha_solver", self.content)
+        self.test.create_image("src", self.content)
 
-        assert "a1bc2.png" in os.listdir("captcha_solver/foo")
+        assert "a1bc2.png" in os.listdir("src/foo")
 
     def test_method_if_there_is_no_incorrect_image(self):
-        assert os.listdir("captcha_solver/foo") == ["a1bc2.png"]
+        assert os.listdir("src/foo") == ["a1bc2.png"]
 
 
     def test_cleaning_the_created_captcha_image_from_the_foo_folder(self):
         try:
-            os.remove("captcha_solver/foo/a1bc2.png")
+            os.remove("src/foo/a1bc2.png")
 
         except FileNotFoundError:
             print("There is no such file.")
 
     def test_cleaning_the_created_testing_folder(self):
         try:
-            os.rmdir("captcha_solver/foo")
+            os.rmdir("src/foo")
 
         except FileNotFoundError:
             print("There is no such folder")

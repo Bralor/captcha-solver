@@ -292,3 +292,16 @@ class CaptchaContentGenerator:
 
         return "".join(random.choices(chars_collection, k=self.length))
 
+    def create_batch(self, count: int) -> tuple:
+        """
+        Return a tuple of N samples with captcha content.
+
+        :return: the tuple of N values
+        :rtype: tuple
+
+        :Example:
+        >>> batch = CaptchaContentGenerator.create_batch(5)
+        >>> batch
+        ('a34vB', 'mn547', 's2398', 'd12gn', 'po09d')
+        """
+        return tuple([self.create_content() for _ in range(count)])

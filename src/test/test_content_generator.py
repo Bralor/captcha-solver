@@ -1,6 +1,6 @@
 import pytest
 
-from captcha_solver.generator_honza import CaptchaContentGenerator
+from src.generator_honza import CaptchaContentGenerator
 
 class TestCaptchaContentGenerator:
 
@@ -54,3 +54,9 @@ class TestCaptchaContentGenerator:
 
     def test_creating_captchas_content_of_incorrect_length(self):
         assert len(self.test.create_content()) != 55
+
+    def test_the_correct_number_of_generated_samples(self):
+        assert len(self.test.create_batch(10)) == 10
+
+    def test_the_incorrect_number_of_generated_samples(self):
+        assert len(self.test.create_batch(10)) != 100
