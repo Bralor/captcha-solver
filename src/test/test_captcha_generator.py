@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from src.generator_honza import DatasetGenerator
+from src.generator import DatasetGenerator
 
 
 class TestDatasetGenerator:
