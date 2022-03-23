@@ -1,6 +1,6 @@
 import pytest
 
-from src.generator_honza import CaptchaContentGenerator
+from src.generator import CaptchaContentGenerator
 
 class TestCaptchaContentGenerator:
 
