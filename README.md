@@ -21,25 +21,38 @@ $ pip install -e .
 
 ---
 
-First thing first, you need to generate content of captcha image:
+First thing first, you need to generate content of captcha image.
+
+You can create a single string:
 ```
-$ python
->>> from captcha_solver.generator_honza import CaptchaContentGenerator as ccg
->>> sample_1 = ccg(length=5, numbers=True, lowercase=True, uppercase=True)
->>> sample_2 = ccg(length=6, numbers=True, lowercase=True, uppercase=True)
->>> sample_1
-'1aD3x'
->>> sample_2
-'aSDR3t'
+>>> from src.content_creator import CaptchaContentGenerator as ccg
+>>> single = ccg(length=5, samples=1, numbers=True, lowercase=True, uppercase=True)
+>>> single
+1aD3x
+```
+... or a batch:
+```
+>>> from src.content_creator import CaptchaContentGenerator as ccg
+>>> samples = ccg(length=5, samples=4, numbers=True, lowercase=True, uppercase=True)
+>>> samples
+XpXJs, 3YUFp, FyNmg, xqujI
 ```
 
+... then you can generate **PNG** files:
 ```
-$ python
->>> from generator import Generate_images, read_image
->>> images = Generate_images(...)
-Images saved to the folder /root/src/images.
->>> read_image("path/to/image")
-captcha: 1aD34
+>>> from src.captcha_generator import DatasetGenerator as dg
+>>> images = dg(x=180, y=50, content=samples)
+
+INFO: Setting up the resolution (180x50),
+INFO: do not forget to specify argument FOLDER,
+
+>>> images.folder = "images"
+
+INFO: Creating the output folder 'images',
+
+>>> image.create_images()
+
+INFO: Images have been saved into the folder 'images'.
 ```
 
 <br>
