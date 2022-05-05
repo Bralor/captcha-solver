@@ -1,42 +1,67 @@
 import os
+import logging
 
 from src.generator_honza import MyImageCaptcha
+
+from captcha.image import ImageCaptcha
 
 
 class DatasetGenerator:
     """Create a set of files"""
 
-    def __init__(self, x: int, y: int, folder: str, choices: int, content: str):
-        self.size_x = x
-        self.size_y = y
+    def __init__(
+            self,
+            size_x: int,
+            size_y: int,
+            content: str,
+            folder: str = ""
+    ):
+        self.size_x = size_x
+        self.size_y = size_y
         self.folder = folder
-        self.choices = choices
         self.content = content
 
-    def create_empty_dir(self, root_dir: str) -> str:
+        self.logger = self.set_logging()
+        self.create_empty_dir(self.logger)
+
+
+    def set_logging(self) -> logging.Logger:
+        """
+        Initiate the logging inside the module.
+        """
+        logging.basicConfig(level=logging.DEBUG)
+        logger = logging.getLogger(__name__)
+        log_handler = logging.FileHandler("runtime_logs.log")
+        log_format = logging.Formatter(
+            "[ %(asctime)s ] - [%(name)s-%(lineno)d] - %(message)s"
+        )
+        log_handler.setFormatter(log_format)
+        logger.addHandler(log_handler)
+
+        return logger
+
+
+    def create_empty_dir(self, log) -> None:
         """
         Create an empty directory if it does not already exist.
 
-        :return: the string with the resulted status
-        :rtype: str
-
         :Example:
         >>> dataset_1 = DatasetGenerator(
-        ...     size_x=180, size_y=50, choices=5, 
-        ...     folder="images", content="a1bc2"
+        ...     size_x=180,
+        ...     size_y=50,
+        ...     folder="images",
+        ...     content="a1bc2"
         ... )
-        >>> dataset_1.create_empty_dir("captcha_solver/")
-        INFO: created directory images at captcha_solver/
+        >>> dataset_1.create_empty_dir()
+        INFO: created directory 'images' in the root.
         """
         try:
-            os.mkdir(os.path.join(root_dir, self.folder))
+            os.mkdir(self.folder)
 
         except FileExistsError:
-            message: str = f"WARNING: Folder {self.folder} already exists"
+            log.warning(f"WARNING: Folder '{self.folder}' already exists.")
         else:
-            message: str = f"INFO: created directory {self.folder} at {root_dir}"
-        finally:
-            return message
+            log.info(f"INFO: created directory '{self.folder}' in the root.")
 
 
     def generate_dataset(self, root_dir: str):
@@ -57,18 +82,22 @@ class DatasetGenerator:
             return self.create_image(root_dir, self.content)
 
 
-    def create_image(self, root_dir: str, png_name: str) -> str:
+    def create_image(self, root_dir: str) -> None:
         """
         Create image object and save it to the disc.
 
         :return: the string with the name of .png file
         :rtype: str
         """
-        image = MyImageCaptcha(self.size_x, self.size_y)
-        png_name = os.path.join(root_dir, self.folder, f"{self.content}.png")
-        image.write(self.content, png_name)
+        # image = MyImageCaptcha(self.size_x, self.size_y)
+        image = ImageCaptcha(fonts=["DroidSansMono.ttf"])
+        data = image.generate(self.content)
+        image.write(
+            self.content,
+            os.path.join(self.folder, f"{self.content}.png")
+        )
 
-        return png_name
+
 
 
 
