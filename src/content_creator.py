@@ -11,14 +11,24 @@ class CaptchaContentGenerator:
     def __init__(
             self,
             length: int,
+            samples: int,
             numbers: bool,
             lowercase: bool,
             uppercase: bool
     ):
         self.length = length
+        self.samples = samples
         self.numbers = numbers
         self.lowercase = lowercase
         self.uppercase = uppercase
+
+
+    def __repr__(self) -> str:
+        if self.samples == 1:
+            return self.create_content()
+        else:
+            return ", ".join(self.create_batch(self.samples))
+
 
     def collect_numbers(self) -> str:
         """
@@ -34,6 +44,7 @@ class CaptchaContentGenerator:
         """
         return string.digits if self.numbers else ""
 
+
     def collect_lowercase(self) -> str:
         """
         Return a string of all lowercase letters.
@@ -48,6 +59,7 @@ class CaptchaContentGenerator:
         """
         return string.ascii_lowercase if self.lowercase else ""
 
+
     def collect_uppercase(self) -> str:
         """
         Return a string of all uppercase letters.
@@ -61,6 +73,7 @@ class CaptchaContentGenerator:
         'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         """
         return string.ascii_uppercase if self.uppercase else ""
+
 
     def create_content(self):
         """
@@ -84,6 +97,7 @@ class CaptchaContentGenerator:
         )
 
         return "".join(random.choices(chars_collection, k=self.length))
+
 
     def create_batch(self, count: int) -> tuple:
         """
