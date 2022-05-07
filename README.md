@@ -41,7 +41,7 @@ XpXJs, 3YUFp, FyNmg, xqujI
 ... then you can generate **PNG** files:
 ```
 >>> from src.captcha_generator import DatasetGenerator as dg
->>> images = dg(x=180, y=50, content=samples)
+>>> images = dg(size_x=180, size_y=50, content=samples)
 
 INFO: Setting up the resolution (180x50),
 INFO: do not forget to specify argument FOLDER,
@@ -54,6 +54,8 @@ INFO: Creating the output folder 'images',
 
 INFO: Images have been saved into the folder 'images'.
 ```
+
+Then you may check the captcha images in the 'images' folder.
 
 <br>
 
